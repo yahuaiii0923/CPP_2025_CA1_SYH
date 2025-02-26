@@ -124,20 +124,19 @@ int main() {
     //     display(p);
     // }
 
-    //SEARCH:
-    // string searchName;
-    // cout << "Enter search name: ";
-    // getline(cin, searchName);
-    //
-    // int index = findProductByName(v, searchName);
-    // if (index == -1) {
-    //     cout << "Product not found!" << endl;
-    // } else {
-    //     cout << "Product found at index: " << index+1 << endl;
-    // }
-    // return 0;
+    //SEARCH PRODUCT:
+     string searchName;
+     cout << "Enter search name: ";
+     getline(cin, searchName);
 
-    //SUPPLIER COUNT:
+     int index = findProductByName(v, searchName);
+     if (index == -1) {
+         cout << "Product not found!" << endl;
+     } else {
+         cout << "Product found at index: " << index+1 << endl;
+     }
+
+    //COUNT SUPPLIER:
      map<string, int> supplierCount = countBySupplier(v);
      cout << "Supplier Count:" << endl;
      for (const auto &p : supplierCount) {
