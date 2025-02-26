@@ -66,6 +66,14 @@ void display(const Product &prod) {
          << endl;
 }
 
+int findProductByName(vector<Product> &data, string &name) {
+    for (int i = 0; i < data.size(); i++) {
+        if (data[i].product_name == name) {
+            return i;
+        }
+    } return -1;
+}
+
 int main() {
     vector<Product> v;
     load("data.csv", v);
@@ -79,9 +87,19 @@ int main() {
          << setw(20) << "Supplier"
          << endl;
 
-    for (const Product &p : v) {
-        display(p);
-    }
+    // for (const Product &p : v) {
+    //     display(p);
+    // }
 
+    string searchName;
+    cout << "Enter search name: ";
+    getline(cin, searchName);
+
+    int index = findProductByName(v, searchName);
+    if (index == -1) {
+        cout << "Product not found!" << endl;
+    } else {
+        cout << "Product found at index: " << index+1 << endl;
+    }
     return 0;
  }
