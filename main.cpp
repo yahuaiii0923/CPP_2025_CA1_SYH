@@ -6,6 +6,8 @@
 #include <sstream>
 #include <fstream>
 #include <vector>
+#include <string>
+#include <algorithm>
 using namespace std;
 
 struct Product {
@@ -39,20 +41,47 @@ void parseLine(const string &line, Product &prod) {
     getline(ss,prod.supplier, ',');
 }
 
-void load(const string &fname, vector<Product> &prod) {
+void load(const string &fname, vector<Product> &data) {
     ifstream fin(fname);
     if (fin) {
         string line;
         while (getline(fin, line)) {
-            Product products;
-            parseLine(line, products);
-            prod.push_back(products);
+            Product prod;
+            parseLine(line, prod);
+            data.push_back(prod);
         }
         fin.close();
+    } else {
+        cout << "Unable to open file " << fname << endl;
     }
+}
+
+void display(const Product &prod) {
+    cout << left
+         << setw(10) << prod.product_id
+         << setw(30) << prod.product_name
+         << setw(12) << fixed << setprecision(2) << prod.unit_price
+         << setw(10) << prod.quantity
+         << setw(20) << prod.supplier
+         << endl;
 }
 
 int main() {
     vector<Product> v;
     load("data.csv", v);
+
+    // Print table header
+    cout << left
+         << setw(10) << "ID"
+         << setw(30) << "Product Name"
+         << setw(12) << "Unit Price"
+         << setw(10) << "Quantity"
+         << setw(20) << "Supplier"
+         << endl;
+
+    for (const Product &p : v) {
+        display(p);
+    }
+
+    return 0;
  }
