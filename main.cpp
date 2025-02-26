@@ -8,6 +8,7 @@
 #include <vector>
 #include <string>
 #include <algorithm>
+#include <map>
 using namespace std;
 
 struct Product {
@@ -74,32 +75,55 @@ int findProductByName(vector<Product> &data, string &name) {
     } return -1;
 }
 
+map<string, int> countBySupplier(vector<Product> &data) {
+    map<string, int> m;
+    for (const Product &prod : data) {
+        m[prod.supplier] += 1;
+    }
+    return m;
+}
+
 int main() {
     vector<Product> v;
     load("data.csv", v);
 
+    // DISPLAY:
     // Print table header
-    cout << left
-         << setw(10) << "ID"
-         << setw(30) << "Product Name"
-         << setw(12) << "Unit Price"
-         << setw(10) << "Quantity"
-         << setw(20) << "Supplier"
-         << endl;
-
+    // cout << left
+    //      << setw(10) << "ID"
+    //      << setw(30) << "Product Name"
+    //      << setw(12) << "Unit Price"
+    //      << setw(10) << "Quantity"
+    //      << setw(20) << "Supplier"
+    //      << endl;
+    //
     // for (const Product &p : v) {
     //     display(p);
     // }
 
-    string searchName;
-    cout << "Enter search name: ";
-    getline(cin, searchName);
+    //SEARCH:
+    // string searchName;
+    // cout << "Enter search name: ";
+    // getline(cin, searchName);
+    //
+    // int index = findProductByName(v, searchName);
+    // if (index == -1) {
+    //     cout << "Product not found!" << endl;
+    // } else {
+    //     cout << "Product found at index: " << index+1 << endl;
+    // }
+    // return 0;
 
-    int index = findProductByName(v, searchName);
-    if (index == -1) {
-        cout << "Product not found!" << endl;
-    } else {
-        cout << "Product found at index: " << index+1 << endl;
+    //COUNT
+    map<string, int> supplier = countBySupplier(v);
+    cout << "Supplier Count:" << endl;
+    for (const auto &p : supplier) {
+        cout << left
+             << setw(20)
+             << p.first
+             << ": "
+             << p.second
+             << " products"
+             << endl;
     }
-    return 0;
  }
