@@ -76,11 +76,34 @@ int findProductByName(vector<Product> &data, string &name) {
 }
 
 map<string, int> countBySupplier(vector<Product> &data) {
-    map<string, int> m;
+    map<string, int> supplierCount;
     for (const Product &prod : data) {
-        m[prod.supplier] += 1;
+        supplierCount[prod.supplier] += 1;
     }
-    return m;
+    return supplierCount;
+}
+
+void displayBySupplier(const vector<Product> &data, const string &supplierName) {
+    bool found = false;
+    cout << "Products from supplier: " << supplierName << endl;
+    cout << left
+          << setw(10) << "ID"
+          << setw(30) << "Product Name"
+          << setw(12) << "Unit Price"
+          << setw(10) << "Quantity"
+          << setw(20) << "Supplier"
+          << endl;
+
+    for (const Product &prod : data) {
+        if (prod.supplier == supplierName) {
+            display(prod);
+            found = true;
+        }
+    }
+
+    if (!found) {
+        cout << "No supplier found" << endl;
+    }
 }
 
 int main() {
@@ -114,16 +137,24 @@ int main() {
     // }
     // return 0;
 
-    //COUNT
-    map<string, int> supplier = countBySupplier(v);
-    cout << "Supplier Count:" << endl;
-    for (const auto &p : supplier) {
-        cout << left
-             << setw(20)
-             << p.first
-             << ": "
-             << p.second
-             << " products"
-             << endl;
-    }
+    //SUPPLIER COUNT:
+     map<string, int> supplierCount = countBySupplier(v);
+     cout << "Supplier Count:" << endl;
+     for (const auto &p : supplierCount) {
+         cout << left
+              << setw(20)
+              << p.first
+              << ": "
+              << p.second
+              << " products"
+              << endl;
+     }
+
+    //FILTER SUPPLIER
+    string userInput;
+    cout << "Enter supplier name to filter: ";
+    getline(cin, userInput);
+
+    displayBySupplier(v, userInput);
+    return 0;
  }
