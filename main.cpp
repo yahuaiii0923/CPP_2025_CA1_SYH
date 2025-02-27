@@ -7,7 +7,6 @@
 #include <fstream>
 #include <vector>
 #include <string>
-#include <algorithm>
 #include <map>
 using namespace std;
 
@@ -55,6 +54,17 @@ void load(const string &fname, vector<Product> &data) {
     } else {
         cout << "Unable to open file " << fname << endl;
     }
+}
+
+void header() {
+    // Print table header
+    cout << left
+         << setw(10) << "ID"
+         << setw(30) << "Product Name"
+         << setw(12) << "Unit Price"
+         << setw(10) << "Quantity"
+         << setw(20) << "Supplier"
+         << endl;
 }
 
 void display(const Product &prod) {
@@ -106,54 +116,82 @@ void displayBySupplier(const vector<Product> &data, const string &supplierName) 
     }
 }
 
+int findQuantityStats(vector<Product> &data, Product &highest, Product &lowest) {
+    if (data.empty()) {
+        cout << "No data found." << endl;
+        return 0;
+    }
+
+    highest = data[0];
+    lowest = data[0];
+
+    int totalQuantity = 0;
+
+    for (const Product &p : data) {
+        totalQuantity += p.quantity;
+
+        if (p.quantity > highest.quantity) {
+            highest = p;
+        }
+        if (p.quantity < lowest.quantity) {
+            lowest = p;
+        }
+    }
+    return totalQuantity / static_cast<int>(data.size());
+}
+
 int main() {
     vector<Product> v;
     load("data.csv", v);
 
     // DISPLAY:
-    // Print table header
-    // cout << left
-    //      << setw(10) << "ID"
-    //      << setw(30) << "Product Name"
-    //      << setw(12) << "Unit Price"
-    //      << setw(10) << "Quantity"
-    //      << setw(20) << "Supplier"
-    //      << endl;
-    //
+    // header();
     // for (const Product &p : v) {
-    //     display(p);
+    //      display(p);
     // }
 
     //SEARCH PRODUCT:
-     string searchName;
-     cout << "Enter search name: ";
-     getline(cin, searchName);
-
-     int index = findProductByName(v, searchName);
-     if (index == -1) {
-         cout << "Product not found!" << endl;
-     } else {
-         cout << "Product found at index: " << index+1 << endl;
-     }
-
-    //COUNT SUPPLIER:
-     map<string, int> supplierCount = countBySupplier(v);
-     cout << "Supplier Count:" << endl;
-     for (const auto &p : supplierCount) {
-         cout << left
-              << setw(20)
-              << p.first
-              << ": "
-              << p.second
-              << " products"
-              << endl;
-     }
+    //  string searchName;
+    //  cout << "Enter search name: ";
+    //  getline(cin, searchName);
+    //
+    //  int index = findProductByName(v, searchName);
+    //  if (index == -1) {
+    //      cout << "Product not found!" << endl;
+    //  } else {
+    //      cout << "Product found at index: " << index+1 << endl;
+    //  }
+    //
+    // //COUNT SUPPLIER:
+    //  map<string, int> supplierCount = countBySupplier(v);
+    //  cout << "Supplier Count:" << endl;
+    //  for (const auto &p : supplierCount) {
+    //      cout << left
+    //           << setw(20)
+    //           << p.first
+    //           << ": "
+    //           << p.second
+    //           << " products"
+    //           << endl;
+    //  }
 
     //FILTER SUPPLIER
-    string userInput;
-    cout << "Enter supplier name to filter: ";
-    getline(cin, userInput);
+    // string userInput;
+    // cout << "Enter supplier name to filter: ";
+    // getline(cin, userInput);
+    //
+    // displayBySupplier(v, userInput);
 
-    displayBySupplier(v, userInput);
-    return 0;
+    //FIND HIGHEST, LOWEST AND AVERAGE
+    Product highest, lowest;
+    int avgQuantity = findQuantityStats(v, highest, lowest);
+
+    cout << "Highest Quantity: " << endl;
+    header();
+    display(highest);
+    cout << "Lowest Quantity: " << endl;
+    header();
+    display(lowest);
+    cout << "Average Quantity of All Products: " << avgQuantity << endl;
+     return 0;
  }
