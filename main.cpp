@@ -140,6 +140,17 @@ int findQuantityStats(vector<Product> &data, Product &highest, Product &lowest) 
     return totalQuantity / static_cast<int>(data.size());
 }
 
+vector<Product> searchProductByName(vector<Product> &data, string &input) {
+    vector<Product> result;
+    for (vector<Product>::const_iterator it = data.begin(); it != data.end(); ++it) {
+        if (it->product_name.find(input) != string::npos) {
+            result.push_back(*it);
+        }
+    }
+
+    return result;
+}
+
 int main() {
     vector<Product> v;
     load("data.csv", v);
@@ -176,22 +187,35 @@ int main() {
     //  }
 
     //FILTER SUPPLIER
-    // string userInput;
+    string userInput;
     // cout << "Enter supplier name to filter: ";
     // getline(cin, userInput);
     //
     // displayBySupplier(v, userInput);
 
     //FIND HIGHEST, LOWEST AND AVERAGE
-    Product highest, lowest;
-    int avgQuantity = findQuantityStats(v, highest, lowest);
+    // Product highest, lowest;
+    // int avgQuantity = findQuantityStats(v, highest, lowest);
+    //
+    // cout << "Highest Quantity: " << endl;
+    // header();
+    // display(highest);
+    // cout << "Lowest Quantity: " << endl;
+    // header();
+    // display(lowest);
+    // cout << "Average Quantity of All Products: " << avgQuantity << endl;
+    //  return 0;
 
-    cout << "Highest Quantity: " << endl;
-    header();
-    display(highest);
-    cout << "Lowest Quantity: " << endl;
-    header();
-    display(lowest);
-    cout << "Average Quantity of All Products: " << avgQuantity << endl;
-     return 0;
+    //SEARCH BY INPUT:
+    cout << "Please enter a product name: ";
+    getline(cin, userInput);
+    vector<Product> matches = searchProductByName(v, userInput);
+    if (matches.empty()) {
+        cout << "No matching products found." << endl;
+    } else {
+        cout << "Matching Products:\n";
+        for (const Product &p : matches) {
+            display(p);
+        }
+    }
  }
