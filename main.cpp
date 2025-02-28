@@ -8,6 +8,7 @@
 #include <vector>
 #include <string>
 #include <map>
+#include <algorithm>
 using namespace std;
 
 struct Product {
@@ -140,10 +141,24 @@ int findQuantityStats(vector<Product> &data, Product &highest, Product &lowest) 
     return totalQuantity / static_cast<int>(data.size());
 }
 
+string toLower(const string &str) {
+    string lowerStr = str;
+    for (size_t i = 0; i < lowerStr.length(); i++) {
+        if (str[i] >= 'A' && str[i] <= 'Z') {
+            lowerStr[i] = str[i] + ('a' - 'A');
+        } else {
+            lowerStr[i] = str[i];
+        }
+    }
+    return lowerStr;
+}
+
 vector<Product> searchProductByName(vector<Product> &data, string &input) {
     vector<Product> result;
-    for (vector<Product>::const_iterator it = data.begin(); it != data.end(); ++it) {
-        if (it->product_name.find(input) != string::npos) {
+    string lowerStr = toLower(input);
+    for (vector<Product>::const_iterator it = data.begin(); it != data.end(); ++it) {\
+        string productName = toLower(it->product_name);
+        if (productName.find(input) != string::npos) {
             result.push_back(*it);
         }
     }
@@ -214,6 +229,7 @@ int main() {
         cout << "No matching products found." << endl;
     } else {
         cout << "Matching Products:\n";
+        header();
         for (const Product &p : matches) {
             display(p);
         }
