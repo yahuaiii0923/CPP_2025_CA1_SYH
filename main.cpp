@@ -19,27 +19,27 @@ struct Product {
     string supplier;
 };
 
-void parseLine(const string &line, Product &prod) {
+void parseLine(const string &line, Product &data) {
     string temp;
     stringstream ss(line);
 
     //get product id
     getline(ss, temp, ',');
-    prod.product_id = stoi(temp);
+    data.product_id = stoi(temp);
 
     //get product name
-    getline(ss, prod.product_name, ',');
+    getline(ss, data.product_name, ',');
 
     //get product unit price
     getline(ss, temp, ',');
-    prod.unit_price = stod(temp);
+    data.unit_price = stod(temp);
 
     //get product quantity
     getline(ss, temp, ',');
-    prod.quantity = stoi(temp);
+    data.quantity = stoi(temp);
 
     //get product supplier
-    getline(ss,prod.supplier, ',');
+    getline(ss,data.supplier, ',');
 }
 
 void load(const string &fname, vector<Product> &data) {
@@ -68,22 +68,30 @@ void header() {
          << endl;
 }
 
-void display(const Product &prod) {
+void display(const Product &data) {
     cout << left
-         << setw(10) << prod.product_id
-         << setw(30) << prod.product_name
-         << setw(12) << fixed << setprecision(2) << prod.unit_price
-         << setw(10) << prod.quantity
-         << setw(20) << prod.supplier
+         << setw(10) << data.product_id
+         << setw(30) << data.product_name
+         << setw(12) << fixed << setprecision(2) << data.unit_price
+         << setw(10) << data.quantity
+         << setw(20) << data.supplier
          << endl;
 }
 
+string toLower(const string &str) {
+    string lowerStr = str;
+    transform(lowerStr.begin(), lowerStr.end(), lowerStr.begin(), ::tolower);
+    return lowerStr;
+}
+
 int findProductByName(vector<Product> &data, string &name) {
+    string lowerName = toLower(name);
     for (int i = 0; i < data.size(); i++) {
-        if (data[i].product_name == name) {
+        if (toLower(data[i].product_name) == lowerName) {
             return i;
         }
-    } return -1;
+    }
+    return -1;
 }
 
 map<string, int> countBySupplier(vector<Product> &data) {
@@ -96,17 +104,12 @@ map<string, int> countBySupplier(vector<Product> &data) {
 
 void displayBySupplier(const vector<Product> &data, const string &supplierName) {
     bool found = false;
+    string lowerSupplierName = toLower(supplierName);
     cout << "\nProducts from supplier: " << supplierName << endl;
-    cout << left
-          << setw(10) << "ID"
-          << setw(30) << "Product Name"
-          << setw(12) << "Unit Price"
-          << setw(10) << "Quantity"
-          << setw(20) << "Supplier"
-          << endl;
+    header();
 
     for (const Product &prod : data) {
-        if (prod.supplier == supplierName) {
+        if (toLower(prod.supplier) == lowerSupplierName) {
             display(prod);
             found = true;
         }
@@ -139,18 +142,6 @@ int findQuantityStats(vector<Product> &data, Product &highest, Product &lowest) 
         }
     }
     return totalQuantity / static_cast<int>(data.size());
-}
-
-string toLower(const string &str) {
-    string lowerStr = str;
-    for (size_t i = 0; i < lowerStr.length(); i++) {
-        if (str[i] >= 'A' && str[i] <= 'Z') {
-            lowerStr[i] = str[i] + ('a' - 'A');
-        } else {
-            lowerStr[i] = str[i];
-        }
-    }
-    return lowerStr;
 }
 
 vector<Product> searchProductByInput(vector<Product> &data, string &input) {
@@ -221,13 +212,13 @@ void menu(vector<Product> &data) {
                 }
             break;
             case 2:
-                cout << "Enter search name: ";
+                cout << "\nEnter search name: ";
                 getline(cin, userInput);
                 index = findProductByName(data, userInput);
                 if (index == -1) {
-                    cout << "\nProduct not found!" << endl;
+                    cout << "Product not found!" << endl;
                 } else {
-                    cout << "\nProduct found at index: " << index+1 << endl;
+                    cout << "Product found at index: " << index+1 << endl;
                 }
             break;
             case 3:
@@ -259,13 +250,13 @@ void menu(vector<Product> &data) {
                 cout << "\nAverage Quantity of All Products: " << avgQuantity << endl;
             break;
             case 6:
-                cout << "Please enter a product name: ";
+                cout << "\nPlease enter a product name: ";
                 getline(cin, userInput);
                 matches = searchProductByInput(data, userInput);
                 if (matches.empty()) {
-                    cout << "\nNo matching products found." << endl;
+                    cout << "No matching products found." << endl;
                 } else {
-                    cout << "\nMatching Products:" << endl;
+                    cout << "Matching Products:" << endl;
                     header();
                     for (const Product &p : matches) {
                         display(p);
@@ -289,9 +280,10 @@ void menu(vector<Product> &data) {
 
     } while (choice != 8);
 }
+
 int main() {
-    vector<Product> v;
-    load("data.csv", v);
-    menu(v);
+    vector<Product> data;
+    load("data.csv", data);
+    menu(data);
     return 0;
  }
