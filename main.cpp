@@ -223,11 +223,14 @@ void menu(vector<Product> &data) {
             break;
             case 3:
                 cout << "\n============================= Supplier Count =============================" << endl;
+                cout << left
+                     << setw(30) << "Supplier Name"
+                     << setw(30) << "Product Count"
+                     << endl;;
                 for (map<string, int>::iterator it = supplierCount.begin(); it != supplierCount.end(); ++it) {
                     cout << left
-                         << setw(20)
+                         << setw(30)
                          << it->first
-                         << ": "
                          << it->second
                          << " products"
                          << endl;
