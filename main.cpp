@@ -166,6 +166,18 @@ vector<Product> searchProductByName(vector<Product> &data, string &input) {
     return result;
 }
 
+void sortPriceDesc(vector<Product> &data) {
+    for (size_t i = 0; i < data.size(); i++) {
+        for (size_t j = i + 1; j < data.size(); j++) {
+            if (data[i].unit_price < data[j].unit_price) {
+                const Product temp = data[i];
+                data[i] = data[j];
+                data[j] = temp;
+            }
+        }
+    }
+}
+
 int main() {
     vector<Product> v;
     load("data.csv", v);
@@ -222,16 +234,23 @@ int main() {
     //  return 0;
 
     //SEARCH BY INPUT:
-    cout << "Please enter a product name: ";
-    getline(cin, userInput);
-    vector<Product> matches = searchProductByName(v, userInput);
-    if (matches.empty()) {
-        cout << "No matching products found." << endl;
-    } else {
-        cout << "Matching Products:\n";
-        header();
-        for (const Product &p : matches) {
-            display(p);
-        }
+    // cout << "Please enter a product name: ";
+    // getline(cin, userInput);
+    // vector<Product> matches = searchProductByName(v, userInput);
+    // if (matches.empty()) {
+    //     cout << "No matching products found." << endl;
+    // } else {
+    //     cout << "Matching Products:\n";
+    //     header();
+    //     for (const Product &p : matches) {
+    //         display(p);
+    //     }
+    // }
+
+    //SORT:
+    sortPriceDesc(v);
+    header();
+    for (const Product &p : v) {
+        display(p);
     }
  }
