@@ -153,7 +153,7 @@ string toLower(const string &str) {
     return lowerStr;
 }
 
-vector<Product> searchProductByName(vector<Product> &data, string &input) {
+vector<Product> searchProductByInput(vector<Product> &data, string &input) {
     vector<Product> result;
     string lowerStr = toLower(input);
     for (vector<Product>::const_iterator it = data.begin(); it != data.end(); ++it) {\
@@ -261,7 +261,7 @@ void menu(vector<Product> &data) {
             case 6:
                 cout << "Please enter a product name: ";
                 getline(cin, userInput);
-                matches = searchProductByName(data, userInput);
+                matches = searchProductByInput(data, userInput);
                 if (matches.empty()) {
                     cout << "\nNo matching products found." << endl;
                 } else {
@@ -294,6 +294,4 @@ int main() {
     load("data.csv", v);
     menu(v);
     return 0;
-
-
  }
