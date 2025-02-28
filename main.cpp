@@ -8,7 +8,7 @@
 #include <vector>
 #include <string>
 #include <map>
-#include <algorithm>
+
 using namespace std;
 
 struct Product {
@@ -96,7 +96,7 @@ map<string, int> countBySupplier(vector<Product> &data) {
 
 void displayBySupplier(const vector<Product> &data, const string &supplierName) {
     bool found = false;
-    cout << "Products from supplier: " << supplierName << endl;
+    cout << "\nProducts from supplier: " << supplierName << endl;
     cout << left
           << setw(10) << "ID"
           << setw(30) << "Product Name"
@@ -158,7 +158,7 @@ vector<Product> searchProductByName(vector<Product> &data, string &input) {
     string lowerStr = toLower(input);
     for (vector<Product>::const_iterator it = data.begin(); it != data.end(); ++it) {\
         string productName = toLower(it->product_name);
-        if (productName.find(input) != string::npos) {
+        if (productName.find(lowerStr) != string::npos) {
             result.push_back(*it);
         }
     }
@@ -178,79 +178,122 @@ void sortPriceDesc(vector<Product> &data) {
     }
 }
 
+void menu(vector<Product> &data) {
+    int choice;
+    int index;
+    string userInput;
+    map<string, int> supplierCount = countBySupplier(data);
+    Product highest, lowest;
+    int avgQuantity;
+    vector<Product> matches;
+    do {
+        cout << "\n======================== Product Management System ========================" << endl;
+        cout << "1. Display All Products" << endl;
+        cout << "2. Search Products by Name" << endl;
+        cout << "3. Count Supplier" << endl;
+        cout << "4. Search Product by Supplier" << endl;
+        cout << "5. Find Quantity Statistic" << endl;
+        cout << "6. Filter Product by Input" << endl;
+        cout << "7. Sort Product Descending by Unit Price" << endl;
+        cout << "8. Exit" << endl;
+
+        while (true) {
+            cout << "\nPlease enter your choice: ";
+            cin >> choice;
+            if (cin.fail()) {
+                cin.clear();
+                cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                cout << "\nInvalid input. Please enter a number between 1 and 8." << endl;
+            } else if (choice < 1 || choice > 8) {
+                cout << "\nInvalid choice. Please enter a number between 1 and 8." << endl;
+            } else {
+                cin.ignore();
+                break;
+            }
+        }
+
+        switch (choice) {
+            case 1:
+                cout << "\n============================== All Products ==============================" << endl;
+                header();
+                for (const Product &prod : data) {
+                    display(prod);
+                }
+            break;
+            case 2:
+                cout << "Enter search name: ";
+                getline(cin, userInput);
+                index = findProductByName(data, userInput);
+                if (index == -1) {
+                    cout << "\nProduct not found!" << endl;
+                } else {
+                    cout << "\nProduct found at index: " << index+1 << endl;
+                }
+            break;
+            case 3:
+                cout << "\n============================= Supplier Count =============================" << endl;
+                for (map<string, int>::iterator it = supplierCount.begin(); it != supplierCount.end(); ++it) {
+                    cout << left
+                         << setw(20)
+                         << it->first
+                         << ": "
+                         << it->second
+                         << " products"
+                         << endl;
+                }
+            break;
+            case 4:
+                cout << "Enter supplier name to filter: ";
+                getline(cin, userInput);
+
+                displayBySupplier(data, userInput);
+            break;
+            case 5:
+                avgQuantity = findQuantityStats(data, highest, lowest);
+                cout << "\nHighest Quantity: " << endl;
+                header();
+                display(highest);
+                cout << "\nLowest Quantity: " << endl;
+                header();
+                display(lowest);
+                cout << "\nAverage Quantity of All Products: " << avgQuantity << endl;
+            break;
+            case 6:
+                cout << "Please enter a product name: ";
+                getline(cin, userInput);
+                matches = searchProductByName(data, userInput);
+                if (matches.empty()) {
+                    cout << "\nNo matching products found." << endl;
+                } else {
+                    cout << "\nMatching Products:" << endl;
+                    header();
+                    for (const Product &p : matches) {
+                        display(p);
+                    }
+                }
+            break;
+            case 7:
+                sortPriceDesc(data);
+                cout << "\n=================== Sorted Product Descending by Price ===================" << endl;
+                header();
+                for (const Product &prod : data) {
+                    display(prod);
+                }
+            break;
+            case 8:
+                cout << "\nExiting Program..." << endl;
+            break;
+            default:
+                cout << "\nInvalid choice. Please enter a valid choice." << endl;
+        }
+
+    } while (choice != 8);
+}
 int main() {
     vector<Product> v;
     load("data.csv", v);
+    menu(v);
+    return 0;
 
-    // DISPLAY:
-    // header();
-    // for (const Product &p : v) {
-    //      display(p);
-    // }
 
-    //SEARCH PRODUCT:
-    //  string searchName;
-    //  cout << "Enter search name: ";
-    //  getline(cin, searchName);
-    //
-    //  int index = findProductByName(v, searchName);
-    //  if (index == -1) {
-    //      cout << "Product not found!" << endl;
-    //  } else {
-    //      cout << "Product found at index: " << index+1 << endl;
-    //  }
-    //
-    // //COUNT SUPPLIER:
-    //  map<string, int> supplierCount = countBySupplier(v);
-    //  cout << "Supplier Count:" << endl;
-    //  for (const auto &p : supplierCount) {
-    //      cout << left
-    //           << setw(20)
-    //           << p.first
-    //           << ": "
-    //           << p.second
-    //           << " products"
-    //           << endl;
-    //  }
-
-    //FILTER SUPPLIER
-    string userInput;
-    // cout << "Enter supplier name to filter: ";
-    // getline(cin, userInput);
-    //
-    // displayBySupplier(v, userInput);
-
-    //FIND HIGHEST, LOWEST AND AVERAGE
-    // Product highest, lowest;
-    // int avgQuantity = findQuantityStats(v, highest, lowest);
-    //
-    // cout << "Highest Quantity: " << endl;
-    // header();
-    // display(highest);
-    // cout << "Lowest Quantity: " << endl;
-    // header();
-    // display(lowest);
-    // cout << "Average Quantity of All Products: " << avgQuantity << endl;
-    //  return 0;
-
-    //SEARCH BY INPUT:
-    // cout << "Please enter a product name: ";
-    // getline(cin, userInput);
-    // vector<Product> matches = searchProductByName(v, userInput);
-    // if (matches.empty()) {
-    //     cout << "No matching products found." << endl;
-    // } else {
-    //     cout << "Matching Products:\n";
-    //     header();
-    //     for (const Product &p : matches) {
-    //         display(p);
-    //     }
-    // }
-
-    //SORT:
-    sortPriceDesc(v);
-    header();
-    for (const Product &p : v) {
-        display(p);
-    }
  }
